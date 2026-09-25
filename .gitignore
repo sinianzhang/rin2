@@ -1,0 +1,41 @@
+*.log
+.DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.codex
+/.claude
+/.cursor/
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+/public/build
+/public/fonts-manifest.dev.json
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+_ide_helper.php
+Homestead.json
+Homestead.yaml
+Thumbs.db
+
+# Windows "downloaded from internet" markers created when copying files into WSL
+*:Zone.Identifier
+
+# Laravel Boost / AI-agent tooling (machine-specific, regenerate with: php artisan boost:install)
+/.agents
+/.mcp.json
+/opencode.json
+/boost.json
+/AGENTS.md
+
+# Local AI assistant notes
+/CLAUDE.md
