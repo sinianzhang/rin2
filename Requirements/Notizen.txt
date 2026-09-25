@@ -1,0 +1,6 @@
+install laravel in Ubuntu (current laravel and php Version) : https://laravel.com/framework/docs/installation
+
+No starter Kits selected, using only Blade (if nessassry using vanilla javascrip)
+
+
+
