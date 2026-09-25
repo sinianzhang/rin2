@@ -2,5 +2,27 @@ install laravel in Ubuntu (current laravel and php Version) : https://laravel.co
 
 No starter Kits selected, using only Blade (if nessassry using vanilla javascrip)
 
+.env: add mysql data
+?> php artisan key:generate
+
+# install mysql server and start
+?> sudo apt install mysql-server                                                                                                                 
+?> sudo service mysql start  
+
+# generate database laravel (sudo)
+  CREATE DATABASE IF NOT EXISTS laravel;                                                                                                        
+  ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';                                                                
+  FLUSH PRIVILEGES;                                                                                                                             
+  EXIT; 
+
+# load tables (jobs, users, cache)
+?> php artisan migrate
+
+I do not use Laravel Herd yet, i use Code VS for rin2-project
+I use HeidiSql als Mysql-Tool
+
+
+
+
 
 
