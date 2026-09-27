@@ -6,6 +6,7 @@ use App\Enums\NotificationType;
 use App\Http\Requests\StoreNotificationPostRequest;
 use App\Models\NotificationPost;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -13,11 +14,24 @@ use Illuminate\View\View;
 class NotificationPostController extends Controller
 {
     /**
-     * Show the notifications page with the form to post a new one.
+     * Show the form to post a notification and the list of read, not expired ones.
      */
     public function index(): View
     {
+        $posts = NotificationPost::query()
+            ->notExpired()
+            ->with('recipients:id,name')
+            ->withCount([
+                'recipients',
+                'recipients as read_count' => function (Builder $query) {
+                    $query->whereNotNull('notification_recipients.read_at');
+                },
+            ])
+            ->latest()
+            ->get();
+
         return view('notifications.index', [
+            'posts' => $posts,
             'types' => NotificationType::cases(),
             'users' => User::query()->orderBy('name')->get(['id', 'name', 'email']),
         ]);

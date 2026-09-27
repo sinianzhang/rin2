@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\NotificationType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -30,5 +32,14 @@ class NotificationPost extends Model
     {
         return $this->belongsToMany(User::class, 'notification_recipients')
             ->withPivot('read_at');
+    }
+
+    /**
+     * Only notifications whose expiration is still in the future.
+     */
+    #[Scope]
+    protected function notExpired(Builder $query): void
+    {
+        $query->where('expires_at', '>', now());
     }
 }

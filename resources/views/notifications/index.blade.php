@@ -70,4 +70,43 @@
             </div>
         </form>
     </section>
+
+    <h2 class="mb-4 text-lg font-semibold">Not expired notifications</h2>
+
+    <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50 text-left text-gray-600">
+                <tr>
+                    <th class="px-4 py-3 font-medium">Created</th>
+                    <th class="px-4 py-3 font-medium">Type</th>
+                    <th class="px-4 py-3 font-medium">Text</th>
+                    <th class="px-4 py-3 font-medium">Destination</th>
+                    <th class="px-4 py-3 font-medium">Read/Total</th>
+                    <th class="px-4 py-3 font-medium">Expires</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                @forelse ($posts as $post)
+                    <tr class="align-top">
+                        <td class="whitespace-nowrap px-4 py-3">{{ $post->created_at->format('d.m.Y H:i') }}</td>
+                        <td class="px-4 py-3">{{ $post->type->label() }}</td>
+                        <td class="max-w-md whitespace-pre-line break-words px-4 py-3">{{ $post->text }}</td>
+                        <td class="px-4 py-3">
+                            @if ($post->recipients_count === 1)
+                                {{ $post->recipients->first()->name }}
+                            @else
+                                {{ $post->recipients_count }} Users
+                            @endif
+                        </td>
+                        <td class="whitespace-nowrap px-4 py-3">{{ $post->read_count }} / {{ $post->recipients_count }}</td>
+                        <td class="whitespace-nowrap px-4 py-3">{{ $post->expires_at->format('d.m.Y H:i') }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-4 py-6 text-center text-gray-500">No notification found.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </x-layout>
