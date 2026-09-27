@@ -28,9 +28,14 @@ database/migrations/2026_09_27_140926_add_notification_settings_to_users_table.p
 app/Models/User.php (extended with 2 fields)
 database/factories/UserFactory.php
 
-
 then add 4 users (database/seeders/DatabaseSeeder.php using UserFactory to create 4 dummy users)
 ?> php artisan db:seed
+
+two tables
+- database/migrations/2026_09_27_143845_create_notification_posts_table.php
+- database/migrations/2026_09_27_143846_create_notification_recipients_table.php
+notification_posts: notification_id, user_id, expirs_at (created_at, updated_at)
+notification_recipients: notification_id, user_id, read_at
 
 
 
