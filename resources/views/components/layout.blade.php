@@ -19,6 +19,10 @@
                    class="text-sm {{ request()->routeIs('users.*') ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900' }}">
                     Users
                 </a>
+                <a href="{{ route('notifications.index') }}"
+                   class="text-sm {{ request()->routeIs('notifications.*') ? 'text-gray-900' : 'text-gray-500 hover:text-gray-900' }}">
+                    All notifications
+                </a>
             </nav>
         </header>
 

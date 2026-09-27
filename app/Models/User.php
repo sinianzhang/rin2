@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -29,5 +30,14 @@ class User extends Authenticatable
             'password' => 'hashed',
             'notifications_enabled' => 'boolean',
         ];
+    }
+
+    /**
+     * Notifications sent to this user; read_at is NULL while unread.
+     */
+    public function notificationPosts(): BelongsToMany
+    {
+        return $this->belongsToMany(NotificationPost::class, 'notification_recipients')
+            ->withPivot('read_at');
     }
 }
