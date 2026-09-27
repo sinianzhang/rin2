@@ -27,7 +27,7 @@ class StoreNotificationPostRequest extends FormRequest
     {
         return [
             'type' => ['required', Rule::enum(NotificationType::class)],
-            'text' => ['required', 'string', 'max:255'],
+            'text' => ['required', 'string', 'max:5000'],
             'expires_at' => ['required', 'date', 'after:now'],
             // "all" or the id of a single user.
             'recipient' => [

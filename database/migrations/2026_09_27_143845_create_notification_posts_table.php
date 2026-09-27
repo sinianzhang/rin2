@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('notification_posts', function (Blueprint $table) {
             $table->id();
             $table->enum('type', ['marketing', 'invoices', 'system']);
-            $table->string('text');
+            $table->text('text');
             $table->timestamp('expires_at')->index();
             $table->timestamps();
         });

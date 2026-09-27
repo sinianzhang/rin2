@@ -46,8 +46,8 @@
 
             <div class="sm:col-span-2">
                 <label for="text" class="mb-1 block text-sm font-medium">Text</label>
-                <input id="text" name="text" type="text" maxlength="255" required value="{{ old('text') }}"
-                       class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+                <textarea id="text" name="text" rows="4" maxlength="5000" required
+                          class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">{{ old('text') }}</textarea>
                 @error('text')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
