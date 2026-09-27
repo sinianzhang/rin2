@@ -23,7 +23,6 @@ I use HeidiSql als Mysql-Tool
 
 add 2 new fields in user table
 database/migrations/2026_09_27_140926_add_notification_settings_to_users_table.php
-?> php artisan migrate:fresh 
 
 app/Models/User.php (extended with 2 fields)
 database/factories/UserFactory.php
