@@ -21,6 +21,17 @@ No starter Kits selected, using only Blade (if nessassry using vanilla javascrip
 I do not use Laravel Herd yet, i use Code VS for rin2-project
 I use HeidiSql als Mysql-Tool
 
+add 2 new fields in user table
+database/migrations/2026_09_27_140926_add_notification_settings_to_users_table.php
+?> php artisan migrate:fresh 
+
+app/Models/User.php (extended with 2 fields)
+database/factories/UserFactory.php
+
+
+then add 4 users (database/seeders/DatabaseSeeder.php using UserFactory to create 4 dummy users)
+?> php artisan db:seed
+
 
 
 
