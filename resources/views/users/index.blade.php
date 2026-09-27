@@ -14,7 +14,13 @@
             <tbody class="divide-y divide-gray-100">
                 @forelse ($users as $user)
                     <tr>
-                        <td class="px-4 py-3">{{ $user->name }}</td>
+                        <td class="px-4 py-3">
+                            {{-- POST, not a link: impersonating changes the session. --}}
+                            <form method="POST" action="{{ route('impersonate.store', $user) }}">
+                                @csrf
+                                <button type="submit" class="font-medium text-blue-600 hover:underline">{{ $user->name }}</button>
+                            </form>
+                        </td>
                         <td class="px-4 py-3">{{ $user->email }}</td>
                         <td class="px-4 py-3">{{ $user->phone_number ?? '—' }}</td>
                         <td class="px-4 py-3">
