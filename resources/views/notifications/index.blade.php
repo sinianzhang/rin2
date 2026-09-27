@@ -90,7 +90,32 @@
                     <tr class="align-top">
                         <td class="whitespace-nowrap px-4 py-3">{{ $post->created_at->format('d.m.Y H:i') }}</td>
                         <td class="px-4 py-3">{{ $post->type->label() }}</td>
-                        <td class="max-w-md whitespace-pre-line break-words px-4 py-3">{{ $post->text }}</td>
+                        <td class="max-w-md break-words px-4 py-3">
+                            <button type="button" popovertarget="post-text-{{ $post->id }}"
+                                    class="cursor-pointer text-gray-500 underline hover:text-gray-900">
+                                details
+                            </button>
+
+                            {{-- Native HTML popover: opens above the page, so the table layout stays unchanged. --}}
+                            <div id="post-text-{{ $post->id }}" popover
+                                    class="m-auto max-h-[80vh] w-full max-w-lg overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 shadow-xl backdrop:bg-gray-900/30">
+                                <div class="mb-4 flex items-start justify-between gap-4">
+                                    <p class="text-sm text-gray-500">
+                                        {{ $post->type->label() }} · {{ $post->created_at->format('d.m.Y H:i') }} · 
+                                        @if ($post->recipients_count === 1)
+                                            {{ $post->recipients->first()->name }}
+                                        @else
+                                            {{ $post->recipients_count }} Users
+                                        @endif
+                                    </p>
+                                    <button type="button" popovertarget="post-text-{{ $post->id }}" popovertargetaction="hide"
+                                            class="cursor-pointer text-sm text-gray-500 hover:text-gray-900">
+                                        Close
+                                    </button>
+                                </div>
+                                <p class="whitespace-pre-line break-words text-sm">{{ $post->text }}</p>
+                            </div>
+                        </td>
                         <td class="px-4 py-3">
                             @if ($post->recipients_count === 1)
                                 {{ $post->recipients->first()->name }}
