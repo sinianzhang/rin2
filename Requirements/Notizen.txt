@@ -37,6 +37,11 @@ notification_posts: notification_id, user_id, expirs_at (created_at, updated_at)
 notification_recipients: notification_id, user_id, read_at
 
 
+telefon validation api (no API Key nessassry)
+propaganistas/laravel-phone was installed directly. 
+giggsey/libphonenumber-for-php-lite came along automatically as its dependency.
+
+
 
 
 
