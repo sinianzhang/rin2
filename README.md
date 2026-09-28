@@ -1,58 +1,214 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# RIN2 – Web app with one-time notifications
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A proof of concept (PoC) built with Laravel and Blade. App user as admin can post notifications to one user or to
+all users. Users see them as **one-time notifications** behind a bell icon in the top bar if the user setting 'on-screen notifications' is on.
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Contents
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. [Features](#features)
+2. [Tech stack](#tech-stack)
+3. [Installation](#installation)
+4. [Design decisions](#design-decisions)
+5. [Project structure](#project-structure)
+6. [Routes](#routes)
+7. [Known limitations](#known-limitations)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Features
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- see orinigal requirements in [`Requirements/Web app with Notifications.pdf`](Requirements/Web%20app%20with%20Notifications.pdf)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Tech stack
+
+| Part | Used |
+|---|---|
+| Language / framework | PHP 8.5, Laravel 13 |
+| Database | MySQL 8 |
+| Frontend | Blade templates, Tailwind CSS 4, Vite, vanilla JavaScript, no laravel starter kit, no SPA framework |
+| Phone validation | [`propaganistas/laravel-phone`](https://github.com/Propaganistas/Laravel-Phone), based on Google's libphonenumber (`giggsey/libphonenumber-for-php-lite`) |
+| Table search | [`simple-datatables`](https://github.com/fiduswriter/simple-datatables) (full text search as filter only, no sorting, no pagination, etc.) |
+| Tests | No PhpUnit-Tests implemented |
+
+
+---
+
+## Installation
+
+### 1. Prerequisites
+
+- PHP ≥ 8.3 with the usual Laravel extensions (`pdo_mysql`, `mbstring`, `xml`, `curl`, …)
+- Composer 2
+- Node.js ≥ 20 and npm
+- MySQL 8
+
+On Linux or Ubuntu, MySQL can be installed and started with:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+sudo apt install mysql-server
+sudo service mysql start
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Create the database
 
-## Contributing
+```bash
+sudo mysql
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```sql
+CREATE DATABASE IF NOT EXISTS laravel;
+-- Only if the root user should log in with a password (as in this setup):
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+FLUSH PRIVILEGES;
+EXIT;
+```
 
-## Code of Conduct
+### 3. Install the project step by step
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Project: https://github.com/sinianzhang/rin2
 
-## Security Vulnerabilities
+Unpack the archive (or clone the repository) and go into the project folder:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+cd one-time-notification
 
-## License
+composer install
+npm install
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+cp .env.example .env
+php artisan key:generate
+```
+
+### 4. Configure the database in `.env`
+
+`.env.example` uses SQLite by default. Change the `DB_*` lines to MySQL:
+
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=root
+```
+
+Optionally set `APP_NAME=RIN2`, which is shown in the top bar.
+
+### 5. Migrate, seed, build, run
+
+```bash
+php artisan migrate --seed   # tables + 4 demo users (Sinian, Luca, Xavier, Wanda)
+npm run build                # compile CSS/JS (or keep `npm run dev` running while developing)
+php artisan serve
+```
+
+Open **http://localhost:8000/users**.
+
+
+---
+
+
+## Design decisions
+
+- **Separate migration for `users`.** The task says the table is already in production, so the original
+  migration is not touched. `extend_users_table` adds the two columns. `notifications_enabled` is
+  `NOT NULL` with `DEFAULT true`, because adding a `NOT NULL` column without a default would fail or
+  leave existing rows invalid.
+- **One recipient row per user.** Posting creates a `notification_recipients` row for every recipient.
+  This makes "who has read what" a simple `read_at` column and keeps the unread count a cheap indexed
+  query (`user_id, read_at`). "All users" means all users that exist at posting time.
+- **Expiration is checked when reading, not by a cleanup job.** Everything that shows notifications uses
+  the `notExpired()` scope, so an expired notification disappears immediately without cron or queues.
+- **Read = dismissed (one-time).** Clicking × sets `read_at`. The bell only lists unread notifications, so a
+  notification is seen once and then gone. Marking as read is scoped to the logged-in user's own unread
+  row, so a user cannot mark someone else's notification, and double clicks are harmless.
+- **Impersonation without passwords.** There is no login page. Clicking a user calls `Auth::login()` (a
+  `POST` with CSRF protection, because it changes the session). `/home` is protected by the `auth`
+  middleware, and guests are redirected to the users list.
+- **On-screen switch.** With `notifications_enabled = false` the bell is hidden and no notifications are
+  loaded. Notifications are still stored, so they appear again (if not expired) when the switch is turned
+  back on.
+- **Phone validation offline.** MessageBird's Lookup is a paid online API that needs an account and API key.
+  Google's libphonenumber (via `propaganistas/laravel-phone`) is free, works offline and checks that a
+  number is valid **and** a mobile number for its country. Numbers must include the country code and are
+  stored in E.164 format (e.g. `+4915123456789`). It cannot check whether a number is currently in use.
+- **No JavaScript framework.** The dropdown and the "details" popup use the native HTML `popover`
+  attribute. The only JavaScript library is `simple-datatables`, and only for its search field.
+- **Client-side filtering.** The lists are small in a PoC, so filtering in the browser is enough and needs
+  no controller changes. For large data sets, server-side filters with pagination would be the next step.
+
+---
+
+## Project structure
+
+Only the files written for this project are listed.
+
+```
+app/
+├─ Enums/NotificationType.php                  marketing | invoices | system
+├─ Http/Controllers/
+│  ├─ UserController.php                       users list, edit + update settings
+│  ├─ ImpersonationController.php              log in as a user / log out
+│  ├─ HomeController.php                       home page with bell + unread list
+│  ├─ NotificationReadController.php           mark a notification as read (×)
+│  └─ NotificationPostController.php           post + list notifications
+├─ Http/Requests/
+│  ├─ UpdateUserRequest.php                    settings validation (incl. mobile number)
+│  └─ StoreNotificationPostRequest.php         new notification validation
+└─ Models/
+   ├─ User.php                                 + notificationPosts() relation
+   └─ NotificationPost.php                     recipients() relation, notExpired() scope
+database/
+├─ migrations/2026_09_27_140926_extend_users_table.php
+├─ migrations/2026_09_27_143845_create_notification_posts_table.php
+├─ migrations/2026_09_27_143846_create_notification_recipients_table.php
+├─ factories/UserFactory.php
+└─ seeders/DatabaseSeeder.php                  4 demo users
+resources/
+├─ views/components/layout.blade.php           shared layout + top bar
+├─ views/components/bell-icon.blade.php, edit-icon.blade.php
+├─ views/users/index.blade.php, edit.blade.php
+├─ views/home/index.blade.php
+├─ views/notifications/index.blade.php
+├─ js/app.js                                   simple-datatables search
+└─ css/app.css                                 Tailwind + table search styling
+routes/web.php
+Requirements/                                  task PDF + setup notes
+```
+
+---
+
+## Routes
+
+| Method | URL | Name | Purpose |
+|---|---|---|---|
+| GET | `/users` | `users.index` | Users list |
+| GET | `/users/{user}/edit` | `users.edit` | Settings form |
+| PUT | `/users/{user}` | `users.update` | Save settings |
+| POST | `/impersonate/{user}` | `impersonate.store` | Log in as the user |
+| DELETE | `/impersonate` | `impersonate.destroy` | Log out |
+| GET | `/home` | `home` | Home page with bell (auth) |
+| POST | `/home/notifications/{notificationPost}/read` | `home.notifications.read` | Mark as read (auth) |
+| GET | `/notifications` | `notifications.index` | Post form + notifications list |
+| POST | `/notifications` | `notifications.store` | Post a notification |
+
+---
+
+## Known limitations
+
+This is a PoC, all the mentined requirements are implemented, so some things, which are not explizit required, are intentionally left out:
+
+- **No real authentication or roles.** Anyone can open the admin pages, edit users and impersonate them.
+- **"All users" is resolved at posting time.** Users created later do not receive earlier notifications.
+- **Notifications are only shown on screen.** Email and phone number are stored and validated, but no
+  email or SMS is sent.
+- **The notifications list shows active notifications only.** Expired ones stay in the database but are not
+  listed.
+- **Easy Filtering by simple-datatabes** (https://github.com/fiduswriter/simple-datatables) Only full text seach as filter, no pagination, no custom sorting, etc.
+- **Datepicker format not localized** Default localization DE from browser, no localized date format: TT.MM.JJJJ
