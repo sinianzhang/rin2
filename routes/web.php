@@ -12,6 +12,8 @@ Route::get('/', function () {
 });
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
 Route::get('/notifications', [NotificationPostController::class, 'index'])->name('notifications.index');
 Route::post('/notifications', [NotificationPostController::class, 'store'])->name('notifications.store');

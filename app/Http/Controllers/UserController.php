@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -28,5 +30,25 @@ class UserController extends Controller
             ->get();
 
         return view('users.index', ['users' => $users]);
+    }
+
+    /**
+     * Show the form to edit a user's notification settings.
+     */
+    public function edit(User $user): View
+    {
+        return view('users.edit', ['user' => $user]);
+    }
+
+    /**
+     * Save a user's notification settings and go back to the user list.
+     */
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    {
+        $user->update($request->validated());
+
+        return redirect()
+            ->route('users.index')
+            ->with('status', "Settings of {$user->name} saved.");
     }
 }
