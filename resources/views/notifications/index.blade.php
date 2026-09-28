@@ -1,5 +1,5 @@
-<x-layout title="All notifications">
-    <h1 class="mb-6 text-2xl font-semibold">All notifications</h1>
+<x-layout title="Notifications">
+    <h1 class="mb-6 text-2xl font-semibold">Notifications</h1>
 
     @if (session('status'))
         <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
