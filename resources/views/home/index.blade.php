@@ -6,23 +6,25 @@
             <a href="{{ route('home') }}" class="font-semibold">{{ config('app.name') }}</a>
 
             <div class="ml-auto flex items-center gap-4 text-sm">
-                {{-- The bell is always shown; it only opens the list when there is something unread. --}}
-                @if ($unreadCount > 0)
-                    <button type="button" popovertarget="notifications"
-                            class="relative cursor-pointer text-gray-500 hover:text-gray-900"
-                            aria-label="{{ $unreadCount }} unread notifications">
-                        <x-bell-icon />
-                        <span class="absolute -right-2 -top-2 min-w-5 rounded-full bg-red-600 px-1 text-center text-xs font-semibold leading-5 text-white">
-                            {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                {{-- The bell is shown only with on-screen notifications switched on; it only opens the list when there is something unread. --}}
+                @if ($user->notifications_enabled)
+                    @if ($unreadCount > 0)
+                        <button type="button" popovertarget="notifications"
+                                class="relative cursor-pointer text-gray-500 hover:text-gray-900"
+                                aria-label="{{ $unreadCount }} unread notifications">
+                            <x-bell-icon />
+                            <span class="absolute -right-2 -top-2 min-w-5 rounded-full bg-red-600 px-1 text-center text-xs font-semibold leading-5 text-white">
+                                {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                            </span>
+                        </button>
+                    @else
+                        <span class="relative text-gray-300" aria-label="No unread notifications">
+                            <x-bell-icon />
+                            <span class="absolute -right-2 -top-2 min-w-5 rounded-full bg-gray-200 px-1 text-center text-xs font-semibold leading-5 text-gray-500">
+                                0
+                            </span>
                         </span>
-                    </button>
-                @else
-                    <span class="relative text-gray-300" aria-label="No unread notifications">
-                        <x-bell-icon />
-                        <span class="absolute -right-2 -top-2 min-w-5 rounded-full bg-gray-200 px-1 text-center text-xs font-semibold leading-5 text-gray-500">
-                            0
-                        </span>
-                    </span>
+                    @endif
                 @endif
 
                 <span class="text-gray-500">Logged in as <span class="font-medium text-gray-900">{{ $user->name }}</span></span>
