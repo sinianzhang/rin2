@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Propaganistas\LaravelPhone\PhoneNumber;
 
 class UserController extends Controller
 {
@@ -45,7 +46,14 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $user->update($request->validated());
+        $data = $request->validated();
+
+        // Store one canonical format (E.164, e.g. +4915123456789), whatever spacing was typed.
+        if ($data['phone_number'] !== null) {
+            $data['phone_number'] = (new PhoneNumber($data['phone_number']))->formatE164();
+        }
+
+        $user->update($data);
 
         return redirect()
             ->route('users.index')

@@ -32,8 +32,8 @@ class UpdateUserRequest extends FormRequest
                 'max:255',
                 Rule::unique('users', 'email')->ignore($this->route('user')),
             ],
-            // Digits with an optional leading "+", spaces and dashes; column is 20 characters.
-            'phone_number' => ['nullable', 'string', 'max:20', 'regex:/^\+?[0-9 \-]+$/'],
+            // A real mobile number in international format (+ country code), checked with libphonenumber.
+            'phone_number' => ['nullable', 'string', 'max:30', 'phone:INTERNATIONAL,mobile'],
         ];
     }
 
@@ -45,7 +45,7 @@ class UpdateUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'phone_number.regex' => 'The phone number may only contain digits, spaces, dashes and a leading +.',
+            'phone_number.phone' => 'Please enter a valid mobile number with country code, e.g. +49 151 23456789.',
         ];
     }
 }

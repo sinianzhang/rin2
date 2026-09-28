@@ -32,9 +32,10 @@
 
         <div>
             <label for="phone_number" class="mb-1 block text-sm font-medium">Phone number</label>
-            <input id="phone_number" name="phone_number" type="tel" maxlength="20"
+            <input id="phone_number" name="phone_number" type="tel" maxlength="30" placeholder="+49 151 23456789"
                    value="{{ old('phone_number', $user->phone_number) }}"
                    class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <p class="mt-1 text-xs text-gray-500">Mobile number with country code, e.g. +49 151 23456789.</p>
             @error('phone_number')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
