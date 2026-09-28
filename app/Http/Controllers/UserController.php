@@ -15,7 +15,7 @@ class UserController extends Controller
     {
         // select() must come before withCount(); columns passed to get() would be ignored.
         $users = User::query()
-            ->select(['id', 'name', 'email', 'phone_number'])
+            ->select(['id', 'name', 'email', 'phone_number', 'notifications_enabled'])
             ->withCount([
                 'notificationPosts as notifications_count' => function (Builder $query) {
                     $query->notExpired();

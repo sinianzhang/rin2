@@ -8,6 +8,7 @@
                     <th class="px-4 py-3 font-medium">Name</th>
                     <th class="px-4 py-3 font-medium">Email</th>
                     <th class="px-4 py-3 font-medium">Phone</th>
+                    <th class="px-4 py-3 font-medium">Email Notification</th>
                     <th class="px-4 py-3 font-medium">Unread notification(s)</th>
                 </tr>
             </thead>
@@ -23,6 +24,7 @@
                         </td>
                         <td class="px-4 py-3">{{ $user->email }}</td>
                         <td class="px-4 py-3">{{ $user->phone_number ?? '—' }}</td>
+                        <td class="px-4 py-3">{{ $user->notifications_enabled ? 'Yes' : 'No' }}</td>
                         <td class="px-4 py-3">
                             @if ($user->unread_notifications_count > 0)
                                 <span class="text-black-400">{{ $user->unread_notifications_count }}</span>
@@ -33,7 +35,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="px-4 py-6 text-center text-gray-500">No users found.</td>
+                        <td colspan="5" class="px-4 py-6 text-center text-gray-500">No users found.</td>
                     </tr>
                 @endforelse
             </tbody>
