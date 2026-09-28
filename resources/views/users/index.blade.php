@@ -8,7 +8,8 @@
     @endif
 
     <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
+        {{-- data-search-table: simple-datatables adds a search field (see resources/js/app.js). --}}
+        <table data-search-table data-placeholder="Search users…" class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50 text-left text-gray-600">
                 <tr>
                     <th class="px-4 py-3 font-medium">Name</th>
@@ -20,7 +21,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-                @forelse ($users as $user)
+                @foreach ($users as $user)
                     <tr>
                         <td class="px-4 py-3">
                             {{-- POST, not a link: impersonating changes the session. --}}
@@ -54,11 +55,7 @@
                             </a>
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-4 py-6 text-center text-gray-500">No users found.</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>

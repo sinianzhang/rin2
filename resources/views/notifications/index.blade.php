@@ -74,7 +74,8 @@
     <h2 class="mb-4 text-lg font-semibold">Not expired notifications</h2>
 
     <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
+        {{-- data-search-table: simple-datatables adds a search field (see resources/js/app.js). --}}
+        <table data-search-table data-placeholder="Search notifications…" class="min-w-full divide-y divide-gray-200 text-sm">
             <thead class="bg-gray-50 text-left text-gray-600">
                 <tr>
                     <th class="px-4 py-3 font-medium">Created</th>
@@ -86,7 +87,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-                @forelse ($posts as $post)
+                @foreach ($posts as $post)
                     <tr class="align-top">
                         <td class="whitespace-nowrap px-4 py-3">{{ $post->created_at->format('d.m.Y H:i') }}</td>
                         <td class="px-4 py-3">{{ $post->type->label() }}</td>
@@ -95,6 +96,8 @@
                                     class="cursor-pointer text-gray-500 underline hover:text-gray-900">
                                 details
                             </button>
+                            {{-- The search reads the visible text only; this copy makes the hidden popover text searchable. --}}
+                            <span class="sr-only">{{ $post->text }}</span>
 
                             {{-- Native HTML popover: opens above the page, so the table layout stays unchanged. --}}
                             <div id="post-text-{{ $post->id }}" popover
@@ -126,11 +129,7 @@
                         <td class="whitespace-nowrap px-4 py-3">{{ $post->read_count }} / {{ $post->recipients_count }}</td>
                         <td class="whitespace-nowrap px-4 py-3">{{ $post->expires_at->format('d.m.Y H:i') }}</td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="px-4 py-6 text-center text-gray-500">No notification found.</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>

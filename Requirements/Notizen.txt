@@ -41,6 +41,10 @@ telefon validation api (no API Key nessassry)
 propaganistas/laravel-phone was installed directly. 
 giggsey/libphonenumber-for-php-lite came along automatically as its dependency.
 
+simple-datatables with one and only search as filter, no other feature more (pagination, sorting, etc.)
+
+
+
 
 
 
