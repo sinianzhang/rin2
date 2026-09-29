@@ -1,7 +1,7 @@
 # RIN2 – Web app with one-time notifications
 
 A proof of concept (PoC) built with Laravel and Blade. App user as admin can post notifications to one user or to
-all users. Users see them as **one-time notifications** behind a bell icon in the top bar if the user setting 'on-screen notifications' is on.
+all users. Users see them as **one-time notifications** behind a bell-icon in the top bar if the user setting 'on-screen notifications' is on.
 
 
 ---
@@ -117,32 +117,27 @@ Open **http://localhost:8000/users**.
 
 ## Design decisions
 
-- **Separate migration for `users`.** The task says the table is already in production, so the original
-  migration is not touched. `extend_users_table` adds the two columns. `notifications_enabled` is
-  `NOT NULL` with `DEFAULT true`, because adding a `NOT NULL` column without a default would fail or
-  leave existing rows invalid.
-- **One recipient row per user.** Posting creates a `notification_recipients` row for every recipient.
-  This makes "who has read what" a simple `read_at` column and keeps the unread count a cheap indexed
-  query (`user_id, read_at`). "All users" means all users that exist at posting time.
-- **Expiration is checked when reading, not by a cleanup job.** Everything that shows notifications uses
-  the `notExpired()` scope, so an expired notification disappears immediately without cron or queues.
-- **Read = dismissed (one-time).** Clicking × sets `read_at`. The bell only lists unread notifications, so a
-  notification is seen once and then gone. Marking as read is scoped to the logged-in user's own unread
-  row, so a user cannot mark someone else's notification, and double clicks are harmless.
-- **Impersonation without passwords.** There is no login page. Clicking a user calls `Auth::login()` (a
-  `POST` with CSRF protection, because it changes the session). `/home` is protected by the `auth`
-  middleware, and guests are redirected to the users list.
-- **On-screen switch.** With `notifications_enabled = false` the bell is hidden and no notifications are
-  loaded. Notifications are still stored, so they appear again (if not expired) when the switch is turned
-  back on.
-- **Phone validation offline.** MessageBird's Lookup is a paid online API that needs an account and API key.
-  Google's libphonenumber (via `propaganistas/laravel-phone`) is free, works offline and checks that a
-  number is valid **and** a mobile number for its country. Numbers must include the country code and are
-  stored in E.164 format (e.g. `+4915123456789`). It cannot check whether a number is currently in use.
-- **No JavaScript framework.** The dropdown and the "details" popup use the native HTML `popover`
-  attribute. The only JavaScript library is `simple-datatables`, and only for its search field.
-- **Client-side filtering.** The lists are small in a PoC, so filtering in the browser is enough and needs
-  no controller changes. For large data sets, server-side filters with pagination would be the next step.
+### Users
+![User list](Requirements/images/user_list.jpg)
+- Admin sees all users and theire basic information, amount of active and unread notifications. 
+- Admin can filter the users and edit user setting on clicking edit-icon
+
+### User edit
+![User edit](Requirements/images/user_edit.jpg)
+- Admin can edit user information
+- User sees active and unread notification (bell-icon) only if 'on-screen notifications' is ON 
+- Besides HTML-validation, the telefon number is validated via Google's libphonenumber (No API key needed, free open source, with quick laravel integration)
+
+### User home
+![User home](Requirements/images/user_home.jpg)
+- Admin can impersonate a user (simulated login/logout) to user home page
+- If the user has 'on-screen notifications' on, he can click on bell-icon and list his own active and unread notifications in dropdown
+- On clicking close-icon, the notification is to be set read and disappers
+
+### Notifications
+![Notifications](Requirements/images/notifications.jpg)
+- Admin can create a new notification sending to all or one user and define the expiration time, etc.
+- Admin gets a list of all active notifications, he can filter the notifications, see basic information like if a notification alread by one or all read and read the notifcation on clicking details-link.
 
 ---
 
@@ -211,10 +206,11 @@ This is a PoC, all the mentined requirements are implemented, so some things, wh
   email or SMS is sent.
 - **The notifications list shows active notifications only.** Expired ones stay in the database but are not
   listed.
-- **Easy Filtering by simple-datatabes** (https://github.com/fiduswriter/simple-datatables) Only full text seach as filter, no pagination, no custom sorting, etc.
+- **Easy Filtering by simple-datatabes** Only full text seach as filter, no pagination, no custom sorting, etc.
 - **Datepicker format not localized** Default localization DE from browser, no localized date format: TT.MM.JJJJ
+- **No PhpUnit-Tests are implemented** In practice, TDD (test-driven development) is the preferred approach.
 
 
 ## HTTPS localhost
-laravel project with https on local development https://localhost:8443
+This laravel project is running with https on my local development https://localhost:8443
 - Please reed [`Notizen.txt -> HTTPS - laravel project with https on local development`](Requirements/Notizen.txt)
