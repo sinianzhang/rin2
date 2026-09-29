@@ -42,3 +42,51 @@ propaganistas/laravel-phone was installed directly.
 giggsey/libphonenumber-for-php-lite came along automatically as its dependency.
 
 simple-datatables with one and only search as filter, no other feature more (pagination, sorting, etc.)
+
+
+-----------------------------------------------------------
+HTTPS - HOW
+
+Local dev (WSL2)
+1. Create a certificate
+mkdir -p ~/certs && cd ~/certs
+mkcert localhost 127.0.0.1 ::1
+# -> localhost+2.pem, localhost+2-key.pem
+
+2. Put a TLS proxy in front of artisan serve. Caddy is the easiest (sudo apt install caddy). Add a Caddyfile in the project root:
+
+{
+	auto_https disable_redirects
+}
+localhost:8443 {
+    tls /home/zhangsinian/certs/localhost+2.pem /home/zhangsinian/certs/localhost+2-key.pem
+    reverse_proxy 127.0.0.1:8000
+}
+
+Then run 'php artisan serve' and 'caddy run' side by side in 2 servers. Nginx with listen 443 ssl plus proxy_pass http://127.0.0.1:8000 works too.
+
+3. .env
+APP_URL=https://localhost:8443
+SESSION_SECURE_COOKIE=true
+
+4. Make Laravel build https:// URLs and trust the proxy. Without this step, route(), asset() and redirects still produce http://:
+
+// app/Providers/AppServiceProvider.php, in boot()
+\Illuminate\Support\Facades\URL::forceHttps(str_starts_with(config('app.url'), 'https://'));
+
+// bootstrap/app.php, in withMiddleware()
+$middleware->trustProxies(at: '127.0.0.1');
+
+5. Vite dev server (optional). Browsers usually allow http://localhost assets on an https page. If HMR gets blocked anyway, give Vite the same cert in vite.config.js:
+
+import fs from 'fs';
+// ...
+server: {
+    https: {
+        key: fs.readFileSync('/home/zhangsinian/certs/localhost+2-key.pem'),
+        cert: fs.readFileSync('/home/zhangsinian/certs/localhost+2.pem'),
+    },
+    host: 'localhost',
+    // keep the existing watch config
+},
+-----------------------------------------------------------

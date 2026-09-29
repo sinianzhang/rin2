@@ -1,0 +1,10 @@
+{
+    # stop automatic redirect from http://localhost to https://localhost
+	auto_https disable_redirects
+}
+
+# http://localhost:8000 to https://localhost:8443
+localhost:8443 {
+	tls /home/zhangsinian/certs/localhost+2.pem /home/zhangsinian/certs/localhost+2-key.pem
+	reverse_proxy 127.0.0.1:8000
+}

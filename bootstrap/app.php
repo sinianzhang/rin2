@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // There is no login page; guests pick a user to impersonate instead.
         $middleware->redirectGuestsTo(fn () => route('users.index'));
+
+        // HTTPS https://localhost:8443
+        $middleware->trustProxies(at: '127.0.0.1');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
