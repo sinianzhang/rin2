@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // HTTPS https://localhost:8443
-        \Illuminate\Support\Facades\URL::forceHttps(str_starts_with(config('app.url'), 'https://'));
+        // if only HTTPS https://localhost:8443                                                                                                                                                                                                              
+        // \Illuminate\Support\Facades\URL::forceHttps(str_starts_with(config('app.url'), 'https://'));
     }
 }

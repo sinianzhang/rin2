@@ -1,7 +1,7 @@
 # RIN2 – Web app with one-time notifications
 
 A proof of concept (PoC) built with Laravel and Blade. App user as admin can post notifications to one user or to
-all users. Users see them as **one-time notifications** behind a bell-icon in the top bar if the user setting 'on-screen notifications' is on.
+all users. Users see them as **one-time notifications** behind a bell-icon in the top bar if the user setting `on-screen notifications` is on.
 
 
 ---
@@ -56,14 +56,15 @@ sudo apt install mysql-server
 sudo service mysql start
 ```
 
-### 2. Create the database
+### 2. Create the database (optional)
 
 ```bash
 sudo mysql
 ```
 
+Optional, you can create a database:rin2 via Mysql or run `php artisan migrate` later.
 ```sql
-CREATE DATABASE IF NOT EXISTS laravel;
+CREATE DATABASE IF NOT EXISTS rin2;
 -- Only if the root user should log in with a password (as in this setup):
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
 FLUSH PRIVILEGES;
@@ -74,14 +75,15 @@ EXIT;
 
 Project: https://github.com/sinianzhang/rin2
 
-Unpack the archive (or clone the repository) and go into the project folder:
+Downlaod and unpack the archive (or clone the repository using git clone) and go into the project folder:
 
 ```bash
-cd one-time-notification
+cd rin2
 
 composer install
 npm install
 
+# create .env and application key
 cp .env.example .env
 php artisan key:generate
 ```
@@ -94,22 +96,31 @@ php artisan key:generate
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=laravel
+DB_DATABASE=rin2
 DB_USERNAME=root
 DB_PASSWORD=root
 ```
 
-Optionally set `APP_NAME=RIN2`, which is shown in the top bar.
+Optionally set `APP_NAME=RIN2` (or One-Time Notifications), which is shown in the top bar.
 
 ### 5. Migrate, seed, build, run
 
 ```bash
-php artisan migrate --seed   # tables + 4 demo users (Sinian, Luca, Xavier, Wanda)
-npm run build                # compile CSS/JS (or keep `npm run dev` running while developing)
+# create dababase:rin2 and tables + 4 demo users (Sinian, Luca, Xavier, Wanda)
+# same as `php artisan migrate` + `php artisan db:seed`
+php artisan migrate --seed   
+
+# compile CSS/JS (or keep `npm run dev` running while developing)
+npm run build
+               
+# alternative: `composer run dev` to start web server
 php artisan serve
 ```
 
+### 6. Run application in browser
 Open **http://localhost:8000/users**.
+
+Or **https://localhost:8443/users**, how to run https in local development, see [HTTPS localhost](#https-localhost)
 
 
 ---
@@ -125,13 +136,13 @@ Open **http://localhost:8000/users**.
 ### User edit
 ![User edit](Requirements/images/user_edit.jpg)
 - Admin can edit user information
-- User sees active and unread notification (bell-icon) only if 'on-screen notifications' is ON 
+- User sees active and unread notification (bell-icon) only if `on-screen notifications` is ON 
 - Besides HTML-validation, the telefon number is validated via Google's libphonenumber (No API key needed, free open source, with quick laravel integration)
 
 ### User home
 ![User home](Requirements/images/user_home.jpg)
 - Admin can impersonate a user (simulated login/logout) to user home page
-- If the user has 'on-screen notifications' on, he can click on bell-icon and list his own active and unread notifications in dropdown
+- If the user has `on-screen notifications` on, he can click on bell-icon and list his own active and unread notifications in dropdown
 - On clicking close-icon, the notification is to be set read and disappers
 
 ### Notifications
@@ -198,7 +209,7 @@ Requirements/                                  task PDF + setup notes
 
 ## Known limitations
 
-This is a PoC, all the mentined requirements are implemented, so some things, which are not explizit required, are intentionally left out:
+This is a PoC, all the mentined requirements are implemented, but some things, which are not explizit required, are intentionally left out:
 
 - **No real authentication or roles.** Anyone can open the admin pages, edit users and impersonate them.
 - **"All users" is resolved at posting time.** Users created later do not receive earlier notifications.
@@ -206,8 +217,8 @@ This is a PoC, all the mentined requirements are implemented, so some things, wh
   email or SMS is sent.
 - **The notifications list shows active notifications only.** Expired ones stay in the database but are not
   listed.
-- **Easy Filtering by simple-datatabes** Only full text seach as filter, no pagination, no custom sorting, etc.
-- **Datepicker format not localized** Default localization DE from browser, no localized date format: TT.MM.JJJJ
+- **Easy Filtering by simple-datatables** Only full text seach as filter, no pagination, no custom sorting, etc.
+- **Datepicker format not localized** Default localization DE from browser TT.MM.JJJJ, no localized date format, e.g EN-format: MM/DD/YYYY (extra javascript-solution needed) 
 - **No PhpUnit-Tests are implemented** In practice, TDD (test-driven development) is the preferred approach.
 
 
