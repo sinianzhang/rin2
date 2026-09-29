@@ -45,7 +45,7 @@ simple-datatables with one and only search as filter, no other feature more (pag
 
 
 -----------------------------------------------------------
-HTTPS - HOW
+HTTPS - laravel project with https on local development
 
 Local dev (WSL2)
 1. Create a certificate

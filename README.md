@@ -15,6 +15,7 @@ all users. Users see them as **one-time notifications** behind a bell icon in th
 5. [Project structure](#project-structure)
 6. [Routes](#routes)
 7. [Known limitations](#known-limitations)
+8. [HTTPS localhost](#https-localhost)
 
 ---
 
@@ -212,3 +213,8 @@ This is a PoC, all the mentined requirements are implemented, so some things, wh
   listed.
 - **Easy Filtering by simple-datatabes** (https://github.com/fiduswriter/simple-datatables) Only full text seach as filter, no pagination, no custom sorting, etc.
 - **Datepicker format not localized** Default localization DE from browser, no localized date format: TT.MM.JJJJ
+
+
+## HTTPS localhost
+laravel project with https on local development https://localhost:8443
+- Please reed [`Notizen.txt -> HTTPS - laravel project with https on local development`](Requirements/Notizen.txt)
